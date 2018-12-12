@@ -6,7 +6,7 @@ go
 
 CREATE PROC GetCategoryTree 
 AS 
-    WITH tree 
+    WITH Tree 
          AS (SELECT c1.Id, 
                     c1.NAME, 
                     [level] = 1, 
@@ -18,17 +18,14 @@ AS
              SELECT c2.Id, 
                     c2.NAME, 
                     [level] = Tree.[Level] + 1, 
-                    Path = Cast(Tree.Path + '/' 
-                                + RIGHT( Cast(c2.Id AS VARCHAR(10)), 10) AS 
-                                VARCHAR( 
-                                100)) 
+                    Path = Cast(Tree.Path + '/' + RIGHT(Cast(c2.Id AS VARCHAR(10)), 10) AS VARCHAR(100)) 
              FROM   dbo.Category c2 
-                    INNER JOIN tree 
+                    INNER JOIN Tree 
                             ON Tree.Id = c2.Parentid) 
     SELECT Tree.Path,
            Tree.NAME AS description 
-    FROM   tree 
+    FROM   Tree 
     ORDER  BY Path 
-    OPTION (maxrecursion 0); 
+    OPTION (maxrecursion 0);
 
 -- EXEC GetCategoryTree
